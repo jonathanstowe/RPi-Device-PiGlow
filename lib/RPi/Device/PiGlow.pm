@@ -79,12 +79,16 @@ class RPi::Device::PiGlow {
 
     constant NUM_LEDS             = 18;
 
+    subset Ring of Int where { $_ >= 0 && $_ <= 5 };
+    subset Arm of Int where { $_ >= 0 && $_ <= 2 };
+    subset Colour of Str where { get-colour-table{$_}:exists };
+
     has RPi::Device::SMBus::DevicePath  $.i2c-bus-device-path = '/dev/i2c-1';
     has RPi::Device::SMBus::I2C-Address $.i2c-device-address  = 0x054;
 
     has RPi::Device::SMBus              $.device-smbus;
 
-    method device-smbus() returns RPi::Device::SMBus handles <write-byte write-block-data> {
+    method device-smbus() returns RPi::Device::SMBus handles <write-byte-data write-block-data> {
         if not $!device-smbus.defined {
             $!device-smbus = RPi::Device::SMBus.new(
                                                     address => $!i2c-device-address, 
@@ -97,7 +101,11 @@ class RPi::Device::PiGlow {
     has @!led-bank-enable-registers = CMD_ENABLE_LEDS_1, CMD_ENABLE_LEDS_2, CMD_ENABLE_LEDS_3;
 
     method update() returns Int {
-        self.write-byte(CMD_UPDATE, 0xFF);
+        self.write-byte-data(CMD_UPDATE, 0xFF);
+    }
+
+    method enable-output() returns Int {
+        self.write-byte-data(CMD_ENABLE_OUTPUT, 0x01);
     }
 
     method enable-all-leds() returns Int {
@@ -121,7 +129,7 @@ class RPi::Device::PiGlow {
     method set-leds(@leds, Int $value is copy ) {
         $value = self.map-gamma($value);
         for @leds -> $led {
-            self.write-byte(self.get-led-register($led), $value);
+            self.write-byte-data(self.get-led-register($led), $value);
         }
     }
 
@@ -152,7 +160,7 @@ class RPi::Device::PiGlow {
 
     has @.ring-table;
 
-    method ring-table() returns Array handles ( 'get-ring-leds' => 'AT-POS' ) {
+    method ring-table() returns Array {
         if @!ring-table.elems == 0 {
             for ^6 -> $led  {
                 for ^3 -> $arm {
@@ -164,14 +172,17 @@ class RPi::Device::PiGlow {
         return @!ring-table;
     }
 
-    subset Ring of Int where { $_ >= 0 && $_ <= 5 };
+    method get-ring-leds(Ring $ring) returns Array {
+        self.ring-table[$ring].Array
+    }
+
 
     method set-ring(Ring $ring, $value) {
         my @ring-leds = self.get-ring-leds($ring);
         self.set-leds(@ring-leds, $value);
     }
 
-    has @.arm-table handles ( 'get-arm-leds' => 'AT-POS' ) = get-arm-table();
+    has @.arm-table = get-arm-table();
 
     sub get-arm-table() returns Array {
         return [
@@ -181,14 +192,17 @@ class RPi::Device::PiGlow {
                ];
     }
 
-    subset Arm of Int where { $_ >= 0 && $_ <= 2 };
+    method get-arm-leds(Arm $arm) returns Array {
+        self.arm-table[$arm].Array;
+    }
+
 
     method set-arm(Arm $arm, $value ) {
         my @arm-leds = self.get-arm-leds($arm);
         self.set-leds(@arm-leds, $value);
     }
 
-    has %.colour-table handles ( 'get-colour-leds' => 'AT-KEY', 'colours' => 'keys' ) = get-colour-table();
+    has %.colour-table handles ( 'colours' => 'keys' ) = get-colour-table();
 
     sub get-colour-table() returns Hash {
         return {
@@ -201,7 +215,10 @@ class RPi::Device::PiGlow {
                };
     }
 
-    subset Colour of Str where { get-colour-table{$_}:exists };
+    method get-colour-leds(Colour $colour) returns Array {
+        self.colour-table{$colour}.Array;
+    }
+
 
     method set-colour(Colour $colour, $value) {
         my @colour-leds = self.get-colour-leds($colour);
@@ -240,7 +257,7 @@ class RPi::Device::PiGlow {
     }
 
     method reset() returns Int {
-        self.write-byte(CMD_RESET, 0xFF);
+        self.write-byte-data(CMD_RESET, 0xFF);
     }
 
 }
