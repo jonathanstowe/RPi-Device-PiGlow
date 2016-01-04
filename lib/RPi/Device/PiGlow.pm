@@ -45,9 +45,146 @@ recommend doing this with any other devices unless you know that they
 won't be adversely affected by "quick write".  The PiGlow has a fixed
 address anyway so the information isn't that useful.
 
+A useful quick guide to setting up for the Rapberry Pi 2 can be found
+at L<https://blog.robseder.com/2015/04/12/getting-a-piglow-to-work-with-a-raspberry-pi-2/> though
+most of that will work for other versions.
+
+=head1 METHODS
+
+=head2 method new
+
+The constructor.  This takes two optional attributes which are passed on
+directly to the L<RPi::Device::SMBus> constructor:
+
+=item i2c-bus-device-path
+
+This sets the device path, it defaults to /dev/i2c-1 (assuming a newer
+Raspberry PI,) You will want to set this if you are using an older PI or
+an OS that creates a different device.
+
+=item i2c-device-address
+
+This sets the i2c device address,  this defaults to 0x54.  Unless you have
+somehow altered the address you shouldn't need to change this.
+
+=head2 method device-smbus
+
+This is the L<RPi::Device::SMBus> object we will be using to interact with i2c.
+It will be initialised with the attributes described above.  You may want
+this if you need to do something to the PiGlow I haven't thought of.
+
+=head2 method update
+
+This updates the values set to the LED registers to the LEDs and changes
+the display.
+
+=head2 method enable-output
+
+This sets the state of the device to active.  
+
+=head2 method enable-all-leds
+
+This turns on all three banks of LEDs.
+
+=head2 method write-all-leds
+
+    method write-all-leds(@values is copy, :$fix) returns Int
+
+This writes the PWM values supplied as an Array  and immediately
+calls C<update> to apply the values to the LEDs.
+The array must be exactly 18 elements long. If the adverb :fix is
+supplied then gamma correction will be applied to the values.
+
+=head2 method all-off
+
+This is convenience to turn off (set to brightness 0) all the LEDs at
+once.  It calls C<update> immediately.
+
+=head2 method set-leds
+
+    method set-leds(@leds, Int $value is copy )
+
+This sets the leds specified in the array C<@leds> 
+( values 0 - 17 to index the LEDs ) all to the single C<$value> specified.
+Gamma adjustment is applied.  This does not call C<update>, this should be
+done afterwards in order to update the LED values.
+
+=head2 method led-table
+
+This provides a mapping between the logical order of the leds (indexed 
+0 - 17 ) to the registers that control them. It returns an Array.
+
+=head2 method ring-table
+
+The arrangement of the LEDs can be thought of as being arrange logically
+as 6 "rings".  This provides access to the rings indexed 0-5, containing
+an array of the led numbers in that ring.
+
+=head2 method set-ring
+
+    method set-ring(Ring $ring, $value)
+
+Sets all of the LEDs in the logical C<$ring> indexed 0 - 5 to the
+C<$value> specified.  Gamma correction is applied to the value.
+This isn't immediately applied to the LEDs, C<update> should be called
+after all the changes have been applied.
+
+=head2 arm-table
+
+This returns an Array of Array that reference the LEDs in
+each "arm" of the PiGlow.
+
+=head2 method set-arm
+
+    method set-arm(Arm $arm, $value )
+
+Sets the LEDs in the specified "arm" of the PiGlow to the specified
+value.  Value has gamma correction applied.  Update isn't applied and
+the C<update> method should be called when all the required updates have
+been performed.
+
+=head2 method  colour-table
+
+This returns a Hash mapping the names of the coloured LEDs to the groups
+of LEDs of that colour.  The delegate C<colours> returns the keys,
+C<get-colour-leds> returns the list of LEDs for a named colour.
+
+=head2 method get-colour-leds
+
+    method get-colour-leds(Colour $colour) returns Array 
+
+Returns an array of the LED numbers for the specified Colour.
+
+=head2 method set-colour
+
+    method set-colour(Colour $colour, $value)
+
+Sets the LEDs in the specified "colour" of the PiGlow to the specified
+value.  Value has gamma correction applied.  Update isn't applied and
+the update method should be called when all the required updates have
+been performed.
+
+=head2 method gamma-table
+
+This is a map of input PWM values (0 - 255) to gamma corrected values
+that produce a more even range of brightness in the LEDs.
+The values were lifted from the piglow library for Node.js which in turn
+borrowed them from elsewhere.
+
+=head2 method gamma-fix-values
+
+This applies the gamma adjustment mapping to the supplied Array of values
+returning the adjust values as an Array
+
+=head2 method reset
+
+Resets the device to its default state.  That is to say all LEDs off.
+It will be necessary to re-enable the groups of LEDs again after calling
+this.
+
 =end pod
 
-class RPi::Device::PiGlow {
+class RPi::Device::PiGlow:ver<0.0.1>:auth<github:jonathanstowe> {
     use RPi::Device::SMBus;
 
     constant CMD_ENABLE_OUTPUT    = 0x00;
