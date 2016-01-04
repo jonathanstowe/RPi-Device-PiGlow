@@ -15,7 +15,7 @@ signal(SIGINT).tap({ say "Reset"; $pg.reset(); exit; });
 loop {
     say "Writing ring " ~ @rings[0];
     $pg.set-ring(@rings[0], 0xFE);
-    for 1 .. 6 -> $clear-rings {
+    for 1 .. 5 -> $clear-rings {
         say "clearing ring " ~ @rings[$clear-rings];
         $pg.set-ring(@rings[$clear-rings], 0x00);
     }
