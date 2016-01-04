@@ -13,7 +13,7 @@ signal(SIGINT).tap({ say "Reset"; $pg.reset(); exit; });
 
 loop {
     say "Writing";
-    $pg.write-all-leds(@values,1 );
+    $pg.write-all-leds(@values, :fix );
     @values = @values.rotate;
     sleep 1;
 }
