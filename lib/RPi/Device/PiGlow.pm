@@ -225,7 +225,7 @@ class RPi::Device::PiGlow:ver<0.0.1>:auth<github:jonathanstowe> {
 
     has RPi::Device::SMBus              $.device-smbus;
 
-    method device-smbus() returns RPi::Device::SMBus handles <write-byte-data write-block-data> {
+    method device-smbus( --> RPi::Device::SMBus ) handles <write-byte-data write-block-data> {
         if not $!device-smbus.defined {
             $!device-smbus = RPi::Device::SMBus.new(
                                                     address => $!i2c-device-address, 
@@ -237,19 +237,19 @@ class RPi::Device::PiGlow:ver<0.0.1>:auth<github:jonathanstowe> {
 
     has @!led-bank-enable-registers = CMD_ENABLE_LEDS_1, CMD_ENABLE_LEDS_2, CMD_ENABLE_LEDS_3;
 
-    method update() returns Int {
+    method update( --> Int ) {
         self.write-byte-data(CMD_UPDATE, 0xFF);
     }
 
-    method enable-output() returns Int {
+    method enable-output( --> Int ) {
         self.write-byte-data(CMD_ENABLE_OUTPUT, 0x01);
     }
 
-    method enable-all-leds() returns Int {
+    method enable-all-leds( --> Int ) {
         self.write-block-data(CMD_ENABLE_LEDS, [0xFF, 0xFF, 0xFF]);
     }
 
-    method write-all-leds(@values is copy, :$fix) returns Int {
+    method write-all-leds(@values is copy, :$fix --> Int ) {
         if $fix {
             @values = self.gamma-fix-values(@values);
         }
@@ -257,7 +257,7 @@ class RPi::Device::PiGlow:ver<0.0.1>:auth<github:jonathanstowe> {
         self.update;
     }
 
-    method all-off() returns Int {
+    method all-off( --> Int ) {
 
         my @vals = 0 xx NUM_LEDS;
         self.write-all-leds(@vals);
@@ -272,7 +272,7 @@ class RPi::Device::PiGlow:ver<0.0.1>:auth<github:jonathanstowe> {
 
     has @.led-table handles ( 'get-led-register' => 'AT-POS' ) = get-led-table();
 
-    sub get-led-table() returns Array {
+    sub get-led-table( --> Array ) {
         return [
              CMD_SET_PWM_VALUE_7,
              CMD_SET_PWM_VALUE_8,
@@ -297,7 +297,7 @@ class RPi::Device::PiGlow:ver<0.0.1>:auth<github:jonathanstowe> {
 
     has @.ring-table;
 
-    method ring-table() returns Array {
+    method ring-table( --> Array ) {
         if @!ring-table.elems == 0 {
             for ^6 -> $led  {
                 for ^3 -> $arm {
@@ -309,7 +309,7 @@ class RPi::Device::PiGlow:ver<0.0.1>:auth<github:jonathanstowe> {
         return @!ring-table;
     }
 
-    method get-ring-leds(Ring $ring) returns Array {
+    method get-ring-leds(Ring $ring --> Array ) {
         self.ring-table[$ring].Array
     }
 
@@ -321,7 +321,7 @@ class RPi::Device::PiGlow:ver<0.0.1>:auth<github:jonathanstowe> {
 
     has @.arm-table = get-arm-table();
 
-    sub get-arm-table() returns Array {
+    sub get-arm-table( --> Array ) {
         return [
                 [0,1,2,3,4,5],
                 [6,7,8,9,10,11],
@@ -341,7 +341,7 @@ class RPi::Device::PiGlow:ver<0.0.1>:auth<github:jonathanstowe> {
 
     has %.colour-table handles ( 'colours' => 'keys' ) = get-colour-table();
 
-    sub get-colour-table() returns Hash {
+    sub get-colour-table( --> Hash ) {
         return {
                     white   => [5,11,17],
                     blue    => [4,10,16],
@@ -352,7 +352,7 @@ class RPi::Device::PiGlow:ver<0.0.1>:auth<github:jonathanstowe> {
                };
     }
 
-    method get-colour-leds(Colour $colour) returns Array {
+    method get-colour-leds(Colour $colour --> Array ) {
         self.colour-table{$colour}.Array;
     }
 
@@ -364,7 +364,7 @@ class RPi::Device::PiGlow:ver<0.0.1>:auth<github:jonathanstowe> {
 
     has @.gamma-table handles ( 'map-gamma' => 'AT-POS' ) = get-gamma-table();
 
-    sub get-gamma-table() returns Array {
+    sub get-gamma-table( --> Array ) {
         return [
             0,   1,   1,   1,   1,   1,   1,   1,   1,   1,   1,   1,   1,   1,
             1,   1,   1,   1,   1,   1,   1,   1,   1,   1,   1,   1,   1,   1,
@@ -388,12 +388,12 @@ class RPi::Device::PiGlow:ver<0.0.1>:auth<github:jonathanstowe> {
         ];
     }
 
-    method gamma-fix-values(@values is copy) returns Array {
+    method gamma-fix-values(@values is copy --> Array ) {
         @values = @values.map({ self.map-gamma($_) });
         return @values;
     }
 
-    method reset() returns Int {
+    method reset(--> Int ) {
         self.write-byte-data(CMD_RESET, 0xFF);
     }
 
