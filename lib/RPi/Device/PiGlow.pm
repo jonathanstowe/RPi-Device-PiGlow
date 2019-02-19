@@ -216,9 +216,9 @@ class RPi::Device::PiGlow:ver<0.0.1>:auth<github:jonathanstowe> {
 
     constant NUM_LEDS             = 18;
 
-    subset Ring of Int where { $_ >= 0 && $_ <= 5 };
-    subset Arm of Int where { $_ >= 0 && $_ <= 2 };
-    subset Colour of Str where { get-colour-table{$_}:exists };
+    subset Ring     of Int where { $_ >= 0 && $_ <= 5 };
+    subset Arm      of Int where { $_ >= 0 && $_ <= 2 };
+    subset Colour   of Str where { get-colour-table{$_}:exists };
 
     has RPi::Device::SMBus::DevicePath  $.i2c-bus-device-path = '/dev/i2c-1';
     has RPi::Device::SMBus::I2C-Address $.i2c-device-address  = 0x054;
@@ -226,13 +226,12 @@ class RPi::Device::PiGlow:ver<0.0.1>:auth<github:jonathanstowe> {
     has RPi::Device::SMBus              $.device-smbus;
 
     method device-smbus( --> RPi::Device::SMBus ) handles <write-byte-data write-block-data> {
-        if not $!device-smbus.defined {
-            $!device-smbus = RPi::Device::SMBus.new(
-                                                    address => $!i2c-device-address, 
-                                                    device  =>  $!i2c-bus-device-path
-                                                   );
+        $!device-smbus //= do  {
+            RPi::Device::SMBus.new(
+                address => $!i2c-device-address, 
+                device  =>  $!i2c-bus-device-path
+            );
         }
-        $!device-smbus;
     }
 
     has @!led-bank-enable-registers = CMD_ENABLE_LEDS_1, CMD_ENABLE_LEDS_2, CMD_ENABLE_LEDS_3;
