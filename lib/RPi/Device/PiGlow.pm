@@ -225,7 +225,7 @@ class RPi::Device::PiGlow:ver<0.0.2>:auth<github:jonathanstowe>:api<1.0> {
 
     has RPi::Device::SMBus              $.device-smbus;
 
-    method device-smbus( --> RPi::Device::SMBus ) handles <write-byte-data write-block-data> {
+    method device-smbus( --> RPi::Device::SMBus ) handles <write-byte-data write-block-data write-i2c-block-data> {
         $!device-smbus //= do  {
             RPi::Device::SMBus.new(
                 address => $!i2c-device-address, 
@@ -245,14 +245,14 @@ class RPi::Device::PiGlow:ver<0.0.2>:auth<github:jonathanstowe>:api<1.0> {
     }
 
     method enable-all-leds( --> Int ) {
-        self.write-block-data(CMD_ENABLE_LEDS, [0xFF, 0xFF, 0xFF]);
+        self.write-i2c-block-data(CMD_ENABLE_LEDS, [0xFF, 0xFF, 0xFF]);
     }
 
     method write-all-leds(@values is copy, :$fix --> Int ) {
         if $fix {
             @values = self.gamma-fix-values(@values);
         }
-        self.write-block-data(CMD_SET_PWM_VALUES, @values);
+        self.write-i2c-block-data(CMD_SET_PWM_VALUES, @values);
         self.update;
     }
 
