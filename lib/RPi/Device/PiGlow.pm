@@ -174,7 +174,7 @@ borrowed them from elsewhere.
 =head2 method gamma-fix-values
 
 This applies the gamma adjustment mapping to the supplied Array of values
-returning the adjust values as an Array
+returning the adjusted values as an Array
 
 =head2 method reset
 
@@ -184,7 +184,7 @@ this.
 
 =end pod
 
-class RPi::Device::PiGlow:ver<0.0.2>:auth<github:jonathanstowe>:api<1.0> {
+class RPi::Device::PiGlow:ver<0.0.3>:auth<github:jonathanstowe>:api<1.0> {
     use RPi::Device::SMBus;
 
     constant CMD_ENABLE_OUTPUT    = 0x00;
