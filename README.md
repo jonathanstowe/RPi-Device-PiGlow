@@ -46,6 +46,9 @@ A useful quick guide to setting up for the Rapberry Pi 2 can be found
 at https://blog.robseder.com/2015/04/12/getting-a-piglow-to-work-with-a-raspberry-pi-2/ though
 most of that will work for other versions.
 
+With a more recent Raspbian install you may just be able to switch on 
+the ```raspi-config``` program, via ```5. Interfacing Options```
+
 ## Installation
 
 Assuming you have a working Rakudo Perl 6 installation you should be able to
@@ -74,4 +77,4 @@ This is free software.
 
 Please see the [LICENCE](LICENCE) file in the distribution
 
-© Jonathan Stowe 2016, 2017
+© Jonathan Stowe 2016 - 2019
