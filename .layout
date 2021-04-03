@@ -1,88 +1,88 @@
 {
-  "type": "layout",
   "children": [
     {
-      "type": "file",
-      "name": "Changes"
+      "name": "META6.json",
+      "type": "file"
     },
     {
-      "name": "t",
-      "purpose": null,
-      "type": "directory",
+      "name": "Changes",
+      "type": "file"
+    },
+    {
+      "name": "examples",
       "children": [
         {
-          "name": "010-use.t",
+          "name": "piglow-rotate",
           "type": "file"
         },
         {
-          "name": "001-meta.t",
+          "name": "piglow-colours",
           "type": "file"
-        }
-      ]
-    },
-    {
-      "type": "file",
-      "name": "README.md"
-    },
-    {
-      "children": [
-        {
-          "type": "file",
-          "name": "piglow-ring.pl"
         },
         {
-          "type": "file",
-          "name": "piglow-pulse.pl"
+          "name": "piglow-pulse",
+          "type": "file"
         },
         {
-          "name": "piglow-colours.pl",
+          "name": "piglow-ring",
           "type": "file"
         },
         {
           "type": "file",
-          "name": "piglow-party.pl"
-        },
-        {
-          "type": "file",
-          "name": "piglow-rotate.pl"
+          "name": "piglow-party"
         }
       ],
-      "name": "examples",
-      "purpose": null,
-      "type": "directory"
-    },
-    {
-      "name": "lib",
-      "purpose": null,
       "type": "directory",
-      "children": [
-        {
-          "children": [
-            {
-              "name": "Device",
-              "purpose": null,
-              "type": "directory",
-              "children": [
-                {
-                  "type": "file",
-                  "name": "PiGlow.pm"
-                }
-              ]
-            }
-          ],
-          "type": "directory",
-          "purpose": null,
-          "name": "RPi"
-        }
-      ]
+      "purpose": null
     },
     {
       "type": "file",
       "name": "LICENCE"
     },
     {
-      "name": "META6.json",
-      "type": "file"
+      "purpose": null,
+      "children": [
+        {
+          "name": "010-use.t",
+          "type": "file"
+        },
+        {
+          "type": "file",
+          "name": "001-meta.t"
+        }
+      ],
+      "type": "directory",
+      "name": "t"
+    },
+    {
+      "children": [
+        {
+          "children": [
+            {
+              "name": "Device",
+              "children": [
+                {
+                  "name": "PiGlow.pm",
+                  "type": "file"
+                }
+              ],
+              "purpose": null,
+              "type": "directory"
+            }
+          ],
+          "name": "RPi",
+          "purpose": null,
+          "type": "directory"
+        }
+      ],
+      "type": "directory",
+      "name": "lib",
+      "purpose": null
+    },
+    {
+      "type": "file",
+      "name": "README.md"
     }
-  ]
+  ],
+  "type": "layout"
 }
