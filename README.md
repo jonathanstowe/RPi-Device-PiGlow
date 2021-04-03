@@ -5,7 +5,7 @@ Interface for the [PiGlow](https://shop.pimoroni.com/products/piglow) device on 
 
 ## Synopsis
 
-```perl6
+```raku
 
     use RPi::Device::PiGlow;
     my $pg = RPi::Device::PiGlow.new();
@@ -26,8 +26,9 @@ See the [examples](examples) directory for more ways of using this.
 The [PiGlow from Pimoroni](http://shop.pimoroni.com/products/piglow)
 is a small board that plugs in to the Raspberry PI's GPIO header with
 18 LEDs on that can be addressed individually via i²c.  This module
-uses RPi::Device::SMBus to abstract the interface to the device so
-that it can be controlled from a Perl programme.  It is assumed that
+uses [RPi::Device::SMBus](https://github.com/jonathanstowe/RPi-Device-SMBus)
+ to abstract the interface to the device so
+that it can be controlled from a Raku programme.  It is assumed that
 you have installed the OS packages required to make i2c work and have
 configured and tested the i²c appropriately.  The only difference that
 seems to affect the PiGlow device is that it only seems to be reported
@@ -42,7 +43,7 @@ so I wouldn't recommend doing this with any other devices unless you know
 that they won't be adversely affected by "quick write".  The PiGlow has
 a fixed address anyway so the information isn't that useful.
 
-A useful quick guide to setting up for the Rapberry Pi 2 can be found
+A useful quick guide to setting up for the Raspberry Pi 2 can be found
 at https://blog.robseder.com/2015/04/12/getting-a-piglow-to-work-with-a-raspberry-pi-2/ though
 most of that will work for other versions.
 
@@ -51,8 +52,7 @@ the ```raspi-config``` program, via ```5. Interfacing Options```
 
 ## Installation
 
-Assuming you have a working Rakudo Perl 6 installation you should be able to
-install this with *zef* :
+Assuming you have a working Rakudo installation you should be able to install this with *zef* :
 
     # From the source directory
    
@@ -62,14 +62,17 @@ install this with *zef* :
 
     zef install RPi::Device::PiGlow
 
+The tests will fail if run on other than a Raspberry Pi with i²c configured.
+
 ## Support
 
-Suggestions/patches are welcomed via github at:
-
-https://github.com/jonathanstowe/RPi-Device-PiGlow/issues
+Suggestions/patches are welcomed via [github](https://github.com/jonathanstowe/RPi-Device-PiGlow/issues).
 
 Because there are limited ways to test this automatically without
 physically observing the device, there may be untested bugs.
+
+I've tested this on three different versions of Raspberry Pi, if you find problems please report the Pi version
+as well as the OS, Raku version etc.
 
 ## Licence
 
@@ -77,4 +80,4 @@ This is free software.
 
 Please see the [LICENCE](LICENCE) file in the distribution
 
-© Jonathan Stowe 2016 - 2019
+© Jonathan Stowe 2016 - 2021

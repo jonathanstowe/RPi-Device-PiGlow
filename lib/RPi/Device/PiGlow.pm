@@ -29,8 +29,8 @@ See the L<examples> directory for more ways of using this.
 The L<PiGlow from Pimoroni|http://shop.pimoroni.com/products/piglow>
 is a small board that plugs in to the Raspberry PI's GPIO header with
 18 LEDs on that can be addressed individually via i2c.  This module
-uses L<RPi::Device::SMBus> to abstract the interface to the device so
-that it can be controlled from a Perl programme.  It is assumed that
+uses L<RPi::Device::SMBus|https://github.com/jonathanstowe/RPi-Device-SMBus> to abstract the interface to the device so
+that it can be controlled from a Raku programme.  It is assumed that
 you have installed the OS packages required to make i2c work and have
 configured and tested the i2c appropriately.  The only difference that
 seems to affect the PiGlow device is that it only seems to be reported
@@ -80,7 +80,7 @@ the display.
 
 =head2 method enable-output
 
-This sets the state of the device to active.  
+This sets the state of the device to active.
 
 =head2 method enable-all-leds
 
@@ -104,14 +104,14 @@ once.  It calls C<update> immediately.
 
     method set-leds(@leds, Int $value is copy )
 
-This sets the leds specified in the array C<@leds> 
+This sets the leds specified in the array C<@leds>
 ( values 0 - 17 to index the LEDs ) all to the single C<$value> specified.
 Gamma adjustment is applied.  This does not call C<update>, this should be
 done afterwards in order to update the LED values.
 
 =head2 method led-table
 
-This provides a mapping between the logical order of the leds (indexed 
+This provides a mapping between the logical order of the leds (indexed
 0 - 17 ) to the registers that control them. It returns an Array.
 
 =head2 method ring-table
@@ -151,7 +151,7 @@ C<get-colour-leds> returns the list of LEDs for a named colour.
 
 =head2 method get-colour-leds
 
-    method get-colour-leds(Colour $colour) returns Array 
+    method get-colour-leds(Colour $colour) returns Array
 
 Returns an array of the LED numbers for the specified Colour.
 
@@ -228,7 +228,7 @@ class RPi::Device::PiGlow:ver<0.0.3>:auth<github:jonathanstowe>:api<1.0> {
     method device-smbus( --> RPi::Device::SMBus ) handles <write-byte-data write-block-data write-i2c-block-data> {
         $!device-smbus //= do  {
             RPi::Device::SMBus.new(
-                address => $!i2c-device-address, 
+                address => $!i2c-device-address,
                 device  =>  $!i2c-bus-device-path
             );
         }
@@ -397,4 +397,4 @@ class RPi::Device::PiGlow:ver<0.0.3>:auth<github:jonathanstowe>:api<1.0> {
     }
 
 }
-# vim: expandtab shiftwidth=4 ft=perl6
+# vim: expandtab shiftwidth=4 ft=raku
