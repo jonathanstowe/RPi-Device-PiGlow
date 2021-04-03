@@ -184,7 +184,7 @@ this.
 
 =end pod
 
-class RPi::Device::PiGlow:ver<0.0.3>:auth<github:jonathanstowe>:api<1.0> {
+class RPi::Device::PiGlow:ver<0.0.4>:auth<github:jonathanstowe>:api<1.0> {
     use RPi::Device::SMBus;
 
     constant CMD_ENABLE_OUTPUT    = 0x00;
